@@ -21,6 +21,13 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@app/common-config": [
+        "libs/common/src"
+      ],
+      "@app/common-config/*": [
+        "libs/common/src/*"
+      ]
+    }
   }
 }

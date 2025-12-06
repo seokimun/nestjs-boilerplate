@@ -28,6 +28,15 @@
         "tsConfigPath": "apps/boilerplate/tsconfig.app.json"
       }
     },
+    "common-config": {
+      "type": "library",
+      "root": "libs/common-config",
+      "entryFile": "index",
+      "sourceRoot": "libs/common-config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common-config/tsconfig.lib.json"
+      }
+    },
     "crud": {
       "type": "application",
       "root": "apps/crud",

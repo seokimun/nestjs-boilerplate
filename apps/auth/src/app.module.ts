@@ -1,8 +1,24 @@
+import { envSchema } from '@app/common-config';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (env) => {
+        const parsed = envSchema.safeParse(env);
+
+        if (!parsed.success) {
+          throw new Error('Invalid enviroment variables');
+        }
+
+        return parsed.data;
+      },
+    }),
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
 })

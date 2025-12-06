@@ -1,24 +1,13 @@
-FROM node:lts
+FROM node:alpine AS development
 
-WORKDIR /src
+WORKDIR /usr/src/app
 
-# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --silent
+RUN npm install -g npm
 
-# Copy everything else
+RUN npm install
+
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Build
-RUN npm run build
-
-# Expose port
-EXPOSE 3001
-
-# Start
 CMD ["npm", "run", "start:dev"]

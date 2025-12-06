@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - .env
+    ports:
+      - ${AUTH_PORT}:${PORT}
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  user:
+    build:
+      context: .
+      dockerfile: ./apps/user/Dockerfile
+      target: development
+    command: npm run start:dev user
+    env_file:
+      - .env
+    ports:
+      - ${USER_PORT}:${PORT}
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  curd:
+    build:
+      context: .
+      dockerfile: ./apps/crud/Dockerfile
+      target: development
+    command: npm run start:dev crud
+    env_file:
+      - .env
+    ports:
+      - ${CRUD_PORT}:${PORT}
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules

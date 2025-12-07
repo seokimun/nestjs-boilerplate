@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${AUTH_PORT}:${PORT}
+      - ${AUTH_PORT}:${HTTP_PORT}
     environment:
       - NODE_ENV=development
     volumes:
@@ -26,14 +26,14 @@ services:
     env_file:
       - .env
     ports:
-      - ${USER_PORT}:${PORT}
+      - ${USER_PORT}:${HTTP_PORT}
     environment:
       - NODE_ENV=development
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
 
-  curd:
+  crud:
     build:
       context: .
       dockerfile: ./apps/crud/Dockerfile
@@ -42,7 +42,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${CRUD_PORT}:${PORT}
+      - ${CRUD_PORT}:${HTTP_PORT}
     environment:
       - NODE_ENV=development
     volumes:

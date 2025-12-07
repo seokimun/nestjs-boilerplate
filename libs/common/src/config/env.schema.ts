@@ -7,9 +7,10 @@ export const envSchema = z.object({
   // JWT_EXPIRES_IN: z.string().default('3600s'),
 
   // GATEWAY_PORT: z.coerce.number().default(3000),
-  AUTH_PORT: z.coerce.number().default(3001),
-  USER_PORT: z.coerce.number().default(3002),
-  CRUD_PORT: z.coerce.number().default(3003),
+  HTTP_PORT: z.coerce.number(),
+  AUTH_PORT: z.coerce.number(),
+  USER_PORT: z.coerce.number(),
+  CRUD_PORT: z.coerce.number(),
 });
 
 export type EnvVars = z.infer<typeof envSchema>;

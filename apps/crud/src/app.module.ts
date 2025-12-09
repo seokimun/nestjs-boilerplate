@@ -1,6 +1,7 @@
 import { envSchema } from '@app/common-config';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from '../../prisma/prisma.module';
 import { CrudModule } from './crud/crud.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { CrudModule } from './crud/crud.module';
       },
     }),
     CrudModule,
+    PrismaModule,
   ],
   controllers: [],
   providers: [],

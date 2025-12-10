@@ -7,3 +7,20 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @unique() @db.VarChar(50)
+  name      String    @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Crud {
+  id          String    @id @default(uuid()) @db.Uuid
+  testField1  String?
+  testField2  Int?
+  authorName  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Crud" ALTER COLUMN "testField1" DROP NOT NULL,
+ALTER COLUMN "testField2" DROP NOT NULL,
+ALTER COLUMN "authorName" DROP NOT NULL;

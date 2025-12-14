@@ -20,7 +20,6 @@ model Crud {
   id          String    @id @default(uuid()) @db.Uuid
   testField1  String?
   testField2  Int?
-  authorName  String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

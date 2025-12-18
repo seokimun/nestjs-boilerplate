@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { CrudModule } from './crud/crud.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CrudModule } from './crud/crud.module';
     }),
     CrudModule,
     PrismaModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

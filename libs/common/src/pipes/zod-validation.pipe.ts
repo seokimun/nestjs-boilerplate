@@ -1,5 +1,5 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
-import { ZodSchema } from 'zod/v3';
+import { prettifyError, ZodSchema } from 'zod';
 
 export class ZodValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
@@ -10,7 +10,7 @@ export class ZodValidationPipe implements PipeTransform {
     if (!result.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        errors: result.error.format(),
+        pretty: prettifyError(result.error), //보안 취약점(해커가 검증타입을 알아낼 수 있음)
       });
     }
 

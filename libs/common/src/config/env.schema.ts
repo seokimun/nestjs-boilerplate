@@ -12,10 +12,14 @@ export const envSchema = z.object({
   POSTGRES_PASSWORD: z.string(),
   POSTGRES_DATABASE: z.string(),
 
-  DATABASE_URL: z.string().url(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_CALLBACK_URL: z.string().url(),
 
-  // JWT_SECRET: z.string().min(1),
-  // JWT_EXPIRES_IN: z.string().default('3600s'),
+  JWT_SECRET: z.string(),
+  JWT_EXPIRES_IN: z.coerce.number(),
+
+  DATABASE_URL: z.string().url(),
 });
 
 export type EnvVars = z.infer<typeof envSchema>;

@@ -8,10 +8,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id        String    @id @default(uuid()) @db.Uuid
   email     String    @unique() @db.VarChar(50)
   name      String    @db.VarChar(50)
+  role      Role      @default(USER)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

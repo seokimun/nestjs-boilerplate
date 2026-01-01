@@ -15,6 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: Payload): Promise<Payload> {
+    // user 없을 시 에러처리 작성할 것
     return payload;
   }
 }

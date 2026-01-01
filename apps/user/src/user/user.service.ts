@@ -19,7 +19,9 @@ export class UserService {
       create: {
         email,
         name,
+        role: 'USER',
       },
+      select: { id: true, email: true, role: true }, // 최소한의 필드 선택
     });
   }
 }

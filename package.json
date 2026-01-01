@@ -30,6 +30,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.3",
     "@nestjs/terminus": "^11.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",

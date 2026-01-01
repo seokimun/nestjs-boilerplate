@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from '../../auth/src/auth/auth.module';
+import { RolesGuard } from '../../auth/src/auth/guard/roles.guard';
 import { JwtAuthGuard } from '../../auth/src/auth/jwt/jwt.guard';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { HealthModule } from './health/health.module';
@@ -22,16 +23,20 @@ import { UserModule } from './user/user.module';
         return parsed.data;
       },
     }),
+    AuthModule,
     UserModule,
     PrismaModule,
     HealthModule,
-    AuthModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

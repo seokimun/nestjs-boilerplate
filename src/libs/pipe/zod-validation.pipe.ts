@@ -10,7 +10,7 @@ export class ZdoValidationPipe implements PipeTransform {
     if (!result.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        pretty: prettifyError(result.error), //운영 시 제거
+        pretty: prettifyError(result.error), //운영 시 제거(보안 취약점)
       });
     }
 

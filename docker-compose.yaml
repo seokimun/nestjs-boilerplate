@@ -27,13 +27,11 @@ services:
       - .env
     ports:
       - '3001:${HTTP_PORT}'
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - db
     volumes:
       - '.:/src'
-      - './node_modules:/src/node_modules/'
+      - node_modules:/src/node_modules
 
 volumes:
   db:

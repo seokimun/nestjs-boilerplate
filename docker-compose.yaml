@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     ports:
-      - '${HTTP_PORT}:3000'
+      - '3001:${HTTP_PORT}'
     environment:
       - DATABASE_URL=${DATABASE_URL}
     depends_on:

@@ -27,7 +27,7 @@ export class HealthController {
   @Get('ready')
   @HealthCheck()
   async readyCheck() {
-    const check = await this.health.check([() => this.db.isHealth('db')]);
+    const check = await this.health.check([() => this.db.isHealthy('db')]);
     return {
       status: check.status,
       details: check.details,

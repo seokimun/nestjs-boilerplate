@@ -4,6 +4,8 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class PrismaHealthIndicator extends HealthIndicator {
+  private logger = new Logger(PrismaHealthIndicator.name);
+
   constructor(private readonly prisma: PrismaService) {
     super();
   }
@@ -13,7 +15,8 @@ export class PrismaHealthIndicator extends HealthIndicator {
       await this.prisma.$queryRaw`SELECT 1`;
       return this.getStatus(key, true);
     } catch (e) {
-      Logger.error('Prisma health check failed');
+      this.logger.error('Prisma health check failed', e);
+
       return this.getStatus(key, false);
     }
   }

@@ -20,7 +20,6 @@ export class HealthController {
 
     return {
       status: check.status,
-      details: check.details,
     };
   }
 
@@ -30,7 +29,6 @@ export class HealthController {
     const check = await this.health.check([() => this.db.isHealthy('db')]);
     return {
       status: check.status,
-      details: check.details,
     };
   }
 }

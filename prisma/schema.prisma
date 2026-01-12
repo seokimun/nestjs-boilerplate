@@ -6,7 +6,29 @@ generator client {
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
-datasource db {
+daATAtasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DBASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @unique() @db.VarChar(50)
+  name      String    @db.VarChar(50)
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Crud {
+  id          String    @id @default(uuid()) @db.Uuid
+  testField1  String    
+  testField2  Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

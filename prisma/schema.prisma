@@ -6,9 +6,9 @@ generator client {
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
-daATAtasource db {
+datasource db {
   provider = "postgresql"
-  url      = env("DBASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 enum Role {

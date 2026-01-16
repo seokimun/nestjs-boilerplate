@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
+import { SkipThrottle } from '@nestjs/throttler';
 import { PrismaHealthIndicator } from '../../../libs/prisma/health/prisma.health';
 
 @Controller({ path: 'health', version: '1' })
@@ -10,6 +11,7 @@ export class HealthController {
   ) {}
 
   @Get()
+  @SkipThrottle()
   @HealthCheck()
   async healthCheck() {
     const check = await this.health.check([
@@ -24,6 +26,7 @@ export class HealthController {
   }
 
   @Get('ready')
+  @SkipThrottle()
   @HealthCheck()
   async readyCheck() {
     const check = await this.health.check([() => this.db.isHealthy('db')]);

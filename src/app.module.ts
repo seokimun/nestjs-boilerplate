@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { RolesGuard } from './api/v1/auth/guard/roles.guard';
 import { JwtAuthGuard } from './api/v1/auth/jwt/jwt.guard';
 import { V1Module } from './api/v1/v1.module';
@@ -22,6 +23,14 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
         return parsed.data;
       },
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60_000, //60초
+          limit: 60,  //60회
+        },
+      ],
+    }),
     V1Module,
   ],
   providers: [
@@ -32,6 +41,10 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

@@ -31,7 +31,6 @@ services:
       - db
     volumes:
       - '.:/src'
-      - node_modules:/src/node_modules
 
 volumes:
   db:

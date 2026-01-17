@@ -122,7 +122,7 @@ Dockerfile                     # Container build instructions
 
 ```bash
 # 1. Clone the repository
-git clone <repository-url>
+git clone https://github.com/seokimun/nestjs-boilerplate.git
 cd nestjs-boilerplate
 
 # 2. Copy environment file
@@ -137,4 +137,34 @@ docker compose exec api npx prisma migrate deploy
 # 5. Access the application
 API: http://localhost:3001/v1
 Swagger: http://localhost:3001/v1/api
+```
+
+## 🔐 환경변수 및 비밀 관리
+
+이 프로젝트는 환경변수를 사용하여 민감한 설정 값을 관리합니다.
+모든 비밀정보와 런타임 설정은 .env 파일을 통해 로드되며 **Zod**를 사용하여 시작 시 유효성을 검사합니다.
+
+### Env File
+
+```bash
+# Server Configuration
+HTTP_PORT=3000
+POSTGRES_PORT=6001
+
+# Database Configuration
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DATABASE=postgres
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=(your-google-client-id)
+GOOGLE_CLIENT_SECRET=(your-google-client-secret)
+GOOGLE_CALLBACK_URL=http://localhost:3001/v1/auth/google/callback
+
+# Jwt Configuration
+JWT_SECRET=(your-jwt-secret)
+JWT_EXPIRES_IN=3600s
+
+# Database URL
+DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
 ```

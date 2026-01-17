@@ -168,3 +168,135 @@ JWT_EXPIRES_IN=3600s
 # Database URL
 DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
 ```
+
+## 🐳 Docker 설정
+
+이 프로젝트는 로컬 개발 및 테스트를 위해 **Docker Compose**를 사용하여 완전히 컨테이너화되었습니다.
+
+### Docker Compose 서비스
+
+해당 프로젝트에는 다음과 같은 서비스가 포함됩니다:
+
+- **PostgreSQL 16**
+  - 관계형 데이트베이스
+  - Docker 불륨을 통해 데이터가 영구 저장
+- **NestJS API**
+  - 애플리케이션 서버
+  - 개발 환경에서 핫리로드 기능 활성화
+  - 내부 Docker 네트워크를 통해 PostgreSQL에 연결
+
+### Docker Commands
+
+```bash
+# Start all required services (PostgreSQL + API):
+npm run container:init
+# or
+docker-compose up --build
+
+# Stop services
+docker-compose down
+
+# Restart services
+docker-compose restart
+
+# Remove volumes (⚠️ deletes data)
+docker-compose down -v
+
+# Access API container shell
+docker-compose exec api sh
+```
+
+## 🗄️ Database & Migrations
+
+이 프로젝트는 데이터베이스 접근 및 스키마 관리를 위해 Prisma ORM이 포함된 PostgreSQL을 사용합니다.
+
+### Prisma Commands
+
+```bash
+# Create and apply a new migration (development)
+npx prisma migrate dev --name init
+
+# Apply pending migrations
+npx prisma migrate deploy
+
+# Generate Prisma Client
+npx prisma generate
+
+# Reset database (⚠️ deletes all data)
+npx prisma migrate reset
+
+# Check migration status
+npx prisma migrate status
+```
+
+## 🔐 인증 & 인가
+
+해당 프로젝트는 **Passport**, **JWT** 및 **RBAC**를 기반으로 하는 구조화된 인증 및 권한 부여 시스템을 제공합니다.
+
+### 인증전략
+
+다음과 같은 인증 전략이 지원됩니다:
+
+| Strategy           | Purpose        | Usage             |
+| ------------------ | -------------- | ----------------- |
+| Google OAuth       | 외부 신원 인증 | `/v1/auth/google` |
+| Access Token (JWT) | API 보호       | 모든 경로 보호    |
+
+### Role-Based Access Control (RBAC)
+
+이 시스템은 다음과 같은 역할을 사용하여 역할 기반 권한 부여를 지원합니다:
+
+```ts
+enum Role {
+  ADMIN = 'ADMIN',
+  STANDARD = 'STANDARD',
+}
+```
+
+### Decorators
+
+인증 및 권한 부여에 일반적으로 사용되는 데코레이터:
+
+| Decorator           | Purpose        | Example           |
+| ------------------- | -------------- | ----------------- |
+| `@Public()`         | 인증 절차 무시 | Google OAuth      |
+| `@RBAC(Role.ADMIN)` | 특정 역할 제한 | Admin-only routes |
+
+### Usage Example
+
+Public Route (No Authentication)
+
+```ts
+  @Public()
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin() {}
+```
+
+Role-Restricted Route (Admin Only)
+
+```ts
+  @Get('test-rbac')
+  @RBAC(Role.ADMIN)
+  async testRBAC() {
+    return true;
+  }
+```
+
+Multiple Roles Allowed
+
+```ts
+  @Get('test-rbac')
+  @RBAC(Role.ADMIN, Role.USER)
+  async testRBAC() {
+    return true;
+  }
+```
+
+### How It Works
+
+1. `JWT Guard`는 `APP_GUARD`를 통해 전역으로 등록됩니다.
+2. 모든 요청은 `APP_GUARD`를 거칩니다.
+3. GUARD는 `@Public()` 데코레이터를 확인하여 인증을 건너뜁니다.
+4. GUARD는 JWT 토큰의 유효성을 검하고, 사용자 페이로드가 요청에 있는지 확인합니다.
+5. GUARD는 `@RBAC()` 데코레이터를 통해 접근 권한을 확인하고, 접근을 허용하거나 거부합니다.

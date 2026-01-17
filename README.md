@@ -1,98 +1,113 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Boilerplate
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ 기능
 
-## Description
+- NestJS Monolithic Architecture
+- API Versioning (v1)
+- Prisma ORM + PostgreSQL
+- Docker & Docker Compose
+- JWT Authentication (@RBAC / @IsPublic)
+- Google OAuth 2.0
+- Swagger (OpenAPI) Documentation
+- Health Check (Liveness / Readiness)
+- Rate Limiting & Throttling
+- Winston Logger
+- Environment Validation (Zod)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 🧱 기술스택
 
-```bash
-$ npm install
-```
+| Category      | Technology              | Version |
+| ------------- | ----------------------- | ------- |
+| Framework     | NestJS                  | v11.0.1 |
+| Language      | TypeScript              | v5.7.3  |
+| Runtime       | Node.js                 | >= 18   |
+| Database      | PostgreSQL              | v16     |
+| ORM           | Prisma                  | v6.19.1 |
+| Auth          | Passport                | v0.7.0  |
+| Auth Strategy | JWT / Google OAuth      | v11.0.2 |
+| API Docs      | Swagger (OpenAPI)       | v11.2.5 |
+| Validation    | Zod                     | v4.3.5  |
+| Logging       | Winston                 | v1.10.2 |
+| Infra         | Docker / Docker Compose | latest  |
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+## 📂 프로젝트 구조
 
 ```bash
-# unit tests
-$ npm run test
+src/
+├─ api/
+│ └─ v1/
+│ ├─ auth/
+│ │ ├─ auth.controller.ts       # Auth endpoints
+│ │ ├─ auth.module.ts           # Auth module
+│ │ ├─ auth.service.ts          # Auth business logic
+│ │ ├─ google/
+│ │ │ └─ google.strategy.ts     # Google OAuth strategy
+│ │ ├─ guard/
+│ │ │ ├─ jwt-auth.guard.ts      # JWT authentication guard
+│ │ │ └─ roles.guard.ts         # RBAC roles guard
+│ │ ├─ jwt/
+│ │ │ ├─ jwt.payload.ts         # JWT payload interface
+│ │ │ ├─ jwt.strategy.ts        # JWT passport strategy
+│ │ │ └─ jwt.guard.ts           # JWT guard
+│ │ └─ swagger/
+│ │   └─ login.swagger.ts       # Swagger decorators
+│ │
+│ ├─ crud/
+│ │ ├─ crud.controller.ts       # CRUD API endpoints
+│ │ ├─ crud.module.ts           # CRUD module
+│ │ ├─ crud.service.ts          # CRUD business logic
+│ │ ├─ schema/
+│ │ │ ├─ create-crud.schema.ts  # Zod create schema
+│ │ │ └─ update-crud.schema.ts  # Zod update schema
+│ │ └─ swagger/
+│ │   └─ crud.swagger.ts        # Swagger decorators
+│ │
+│ ├─ health/
+│ │ ├─ health.controller.ts     # Health check endpoints
+│ │ └─ health.module.ts
+│ │
+│ ├─ v1.module.ts               # API v1 module
+│ │
+│ └─ user/
+│ ├─ user.module.ts
+│ └─ user.service.ts
+│
+├─ libs/
+│ ├─ prisma/
+│ │ ├─ prisma.module.ts        # Prisma global module
+│ │ ├─ prisma.service.ts       # Prisma client wrapper
+│ │ └─ health/
+│ │ └─ prisma.health.ts        # DB health indicator
+│ │
+│ ├─ config/
+│ │ ├─ env.schema.ts           # Zod environment schema
+│ │ └─ env.ts                  # Parsed env export
+│ │
+│ ├─ decorators/
+│ │ ├─ access-to.decorator.ts  # RBAC decorator
+│ │ ├─ is-public.decorator.ts  # Public route decorator
+│ │ └─ user.decorator.ts       # Current user decorator
+│ │
+│ ├─ middleware/
+│ │ └─ logger.middleware.ts    # Request logging middleware
+│ │
+│ └─ pipe/
+│   └─ zod-validation.pipe.ts  # Zod validation pipe
+│
+├─ app.module.ts               # Root application module
+└─ main.ts                     # Application bootstrap
 
-# e2e tests
-$ npm run test:e2e
+prisma/
+├─ schema.prisma               # Prisma schema
+└─ migrations/                 # Prisma migrations
 
-# test coverage
-$ npm run test:cov
+docker-compose.yml             # Docker configuration
+Dockerfile                     # Container build instructions
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

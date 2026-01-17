@@ -1,8 +1,6 @@
 # NestJS Boilerplate
 
----
-
-## ✨ 기능
+## ✨ 주요기능
 
 - NestJS Monolithic Architecture
 - API Versioning (v1)
@@ -16,15 +14,13 @@
 - Winston Logger
 - Environment Validation (Zod)
 
----
-
 ## 🧱 기술스택
 
 | Category      | Technology              | Version |
 | ------------- | ----------------------- | ------- |
 | Framework     | NestJS                  | v11.0.1 |
 | Language      | TypeScript              | v5.7.3  |
-| Runtime       | Node.js                 | >= 18   |
+| Runtime       | Node.js                 | >= 22   |
 | Database      | PostgreSQL              | v16     |
 | ORM           | Prisma                  | v6.19.1 |
 | Auth          | Passport                | v0.7.0  |
@@ -33,8 +29,6 @@
 | Validation    | Zod                     | v4.3.5  |
 | Logging       | Winston                 | v1.10.2 |
 | Infra         | Docker / Docker Compose | latest  |
-
----
 
 ## 📂 프로젝트 구조
 
@@ -111,3 +105,36 @@ docker-compose.yml             # Docker configuration
 Dockerfile                     # Container build instructions
 ```
 
+## 🚀 시작하기
+
+### 필수조건
+
+다음 항목들이 설치 및 구성되어 있는지 확인하세요:
+
+- Node.js **>= 22.13.0**
+- Docker & Docker Compose
+- npm
+- Google Cloud Platform account
+  - OAuth 2.0 Client ID & Secret configured
+  - Authorized redirect URI set for Google OAuth
+
+### 설치
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd nestjs-boilerplate
+
+# 2. Copy environment file
+cp .env.example .env
+
+# 3. Start Docker containers
+npm run container:init
+
+# 4. Run database migrations
+docker compose exec api npx prisma migrate deploy
+
+# 5. Access the application
+API: http://localhost:3001/v1
+Swagger: http://localhost:3001/v1/api
+```

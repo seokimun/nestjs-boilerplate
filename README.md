@@ -1,6 +1,6 @@
 # NestJS Boilerplate
 
-## ✨ 주요기능
+## ✨ Features
 
 - NestJS Monolithic Architecture
 - API Versioning (v1)
@@ -14,7 +14,7 @@
 - Winston Logger
 - Environment Validation (Zod)
 
-## 🧱 기술스택
+## 🧱 Tech Stack
 
 | Category      | Technology              | Version |
 | ------------- | ----------------------- | ------- |
@@ -30,7 +30,7 @@
 | Logging       | Winston                 | v1.10.2 |
 | Infra         | Docker / Docker Compose | latest  |
 
-## 📂 프로젝트 구조
+## 📂 Project Structure
 
 ```bash
 src/
@@ -105,9 +105,9 @@ docker-compose.yml             # Docker configuration
 Dockerfile                     # Container build instructions
 ```
 
-## 🚀 시작하기
+## 🚀 Quick Start
 
-### 필수조건
+### Prerequisites
 
 다음 항목들이 설치 및 구성되어 있는지 확인하세요:
 
@@ -118,7 +118,7 @@ Dockerfile                     # Container build instructions
   - OAuth 2.0 Client ID & Secret configured
   - Authorized redirect URI set for Google OAuth
 
-### 설치
+### Installation
 
 ```bash
 # 1. Clone the repository
@@ -139,7 +139,7 @@ API: http://localhost:3001/v1
 Swagger: http://localhost:3001/v1/api
 ```
 
-## 🔐 환경변수 및 비밀 관리
+## 🔐 Environment Variables & Secret Management
 
 이 프로젝트는 환경변수를 사용하여 민감한 설정 값을 관리합니다.
 모든 비밀정보와 런타임 설정은 .env 파일을 통해 로드되며 **Zod**를 사용하여 시작 시 유효성을 검사합니다.
@@ -169,7 +169,7 @@ JWT_EXPIRES_IN=3600s
 DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
 ```
 
-## 🐳 Docker 설정
+## 🐳 Docker Setup
 
 이 프로젝트는 로컬 개발 및 테스트를 위해 **Docker Compose**를 사용하여 완전히 컨테이너화되었습니다.
 
@@ -229,38 +229,54 @@ npx prisma migrate reset
 npx prisma migrate status
 ```
 
-## 🔐 인증 & 인가
+## 🔐 Authentication & Authorization
 
-해당 프로젝트는 **Passport**, **JWT** 및 **RBAC**를 기반으로 하는 구조화된 인증 및 권한 부여 시스템을 제공합니다.
+This boilerplate supports authentication using **Google OAuth 2.0** and **JWT**.
 
-### 인증전략
+### Google OAuth Flow
 
-다음과 같은 인증 전략이 지원됩니다:
+1. Client requests authentication:
+   `GET /v1/auth/google`
 
-| Strategy           | Purpose        | Usage             |
-| ------------------ | -------------- | ----------------- |
-| Google OAuth       | 외부 신원 인증 | `/v1/auth/google` |
-| Access Token (JWT) | API 보호       | 모든 경로 보호    |
+2. User is redirected to Google login
+
+3. Google redirects back to:
+   `GET /v1/auth/google/callback`
+
+4. Server:
+
+- Validates Google profile
+- Finds or creates user
+- Issues a JWT access token
+
+5. Client receives JWT and uses it for authenticated requests
+
+### JWT Authentication
+
+- JWT is sent via Authorization header:
+  `Authorization: Bearer <access_token>`
+
+- Token is validated using a Passport JWT strategy
+
+- User payload is attached to the request context
 
 ### Role-Based Access Control (RBAC)
 
-이 시스템은 다음과 같은 역할을 사용하여 역할 기반 권한 부여를 지원합니다:
+- Roles supported:
+  - `ADMIN`
+  - `USER`
+
+- Access can be restricted using decorators:
 
 ```ts
-enum Role {
-  ADMIN = 'ADMIN',
-  STANDARD = 'STANDARD',
-}
+@RBAC('ADMIN')
 ```
 
-### Decorators
+- Public routes can be marked using:
 
-인증 및 권한 부여에 일반적으로 사용되는 데코레이터:
-
-| Decorator           | Purpose        | Example           |
-| ------------------- | -------------- | ----------------- |
-| `@Public()`         | 인증 절차 무시 | Google OAuth      |
-| `@RBAC(Role.ADMIN)` | 특정 역할 제한 | Admin-only routes |
+```ts
+@Public()
+```
 
 ### Usage Example
 
@@ -295,8 +311,160 @@ Multiple Roles Allowed
 
 ### How It Works
 
-1. `JWT Guard`는 `APP_GUARD`를 통해 전역으로 등록됩니다.
-2. 모든 요청은 `APP_GUARD`를 거칩니다.
-3. GUARD는 `@Public()` 데코레이터를 확인하여 인증을 건너뜁니다.
-4. GUARD는 JWT 토큰의 유효성을 검하고, 사용자 페이로드가 요청에 있는지 확인합니다.
-5. GUARD는 `@RBAC()` 데코레이터를 통해 접근 권한을 확인하고, 접근을 허용하거나 거부합니다.
+1. `JWT Guard` is registered globally via `APP_GUARD`.
+2. All requests go through `APP_GUARD`.
+3. GUARD checks the `@Public()` decorator to bypass authentication.
+4. GUARD validates the JWT token and checks whether the user payload is present in the request.
+5. GUARD checks access permissions via the `@RBAC()` decorator and grants or denies access.
+
+## 🩺 Health Check (Liveness / Readiness)
+
+This project implements **Kubernetes/AWS-style health checks** using `@nestjs/terminus`.
+
+### Endpoints
+
+| Endpoint           | Type      | Description                     |
+| ------------------ | --------- | ------------------------------- |
+| `/v1/health`       | Liveness  | Checks application process only |
+| `/v1/health/ready` | Readiness | Checks application + database   |
+
+### Liveness Check
+
+```http
+GET /v1/health
+```
+
+- Confirms the API process is running
+
+- Does NOT check database connectivity
+
+- Used for container/process restarts
+
+### Readiness Check
+
+```http
+GET /v1/health/ready
+```
+
+- Confirms database connectivity
+
+- Uses a SELECT 1 Prisma query
+
+- Returns HTTP 503 when unavailable
+
+- Used for traffic routing (load balancers)
+
+### Summary
+
+- Database failures do NOT crash the application
+
+- Detailed error logs are written internally
+
+- External systems only see up / down status
+
+## 🚦 Rate Limiting & Throttling
+
+Rate limiting is implemented using `@nestjs/throttler` to protect against abuse.
+
+### Global Throttling Policy
+
+```ts
+ThrottlerModule.forRoot({
+  throttlers: [
+    {
+      ttl: 60_000,
+      limit: 60,
+    },
+  ],
+});
+```
+
+- Allows 60 requests per 60 seconds per IP
+
+- Applies globally via APP_GUARD
+
+### Authentication-Specific Policies
+
+- Login and OAuth endpoints can be throttled more strictly
+
+- Guards can be overridden per route or controller
+
+### Proxy Awareness
+
+When running behind a proxy or load balancer:
+
+```ts
+app.set('trust proxy', 1);
+```
+
+This ensures rate limiting is applied per client IP, not per proxy.
+
+## 📊 Logging & Observability
+
+This project uses **Winston** for structured logging.
+
+### Logger Configuration
+
+- JSON logs with timestamps
+- Stack traces for errors
+- Console output for development
+- File output for persistent logs
+
+### Log Levels
+
+- `info` – Application events
+- `warn` – Unexpected but recoverable issues
+- `error` – Failures and exceptions
+
+### Request Logging
+
+- Incoming requests are logged via middleware
+- Health check failures log minimal information
+- Sensitive details are never exposed to clients
+
+### Production Notes
+
+- Logs should be shipped to centralized systems (CloudWatch, ELK, Datadog)
+- File-based logging is for local and container debugging only
+
+## 📄License
+
+MIT
+
+## 🤝 Contributing
+
+Contributions are welcome and appreciated.
+
+If you want to improve this boilerplate, follow the steps below.
+
+### How to Contribute
+
+1. Fork the repository
+2. Create a new branch for your feature or fix
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Commit your changes with clear and descriptive messages
+
+4. Push the branch to your fork
+
+5. Open a Pull Request
+
+### Contribution Guidelines
+
+- Follow the existing project structure and conventions
+
+- Keep commits small and focused
+
+- Add or update documentation if behavior changes
+
+- Ensure the project builds and runs correctly
+
+## 📞 Support
+
+if you have questions, encounter issues, or need help using this project, please open a **Github issue**
+
+### Notes
+
+- Do not share sensitive information such as access tokens or secrets
+- Provide as much context as possible when asking for help

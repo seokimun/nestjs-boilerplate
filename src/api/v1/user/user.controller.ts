@@ -18,4 +18,10 @@ export class UserController {
   async testRBAC2() {
     return true;
   }
+
+  @Get('test-rbac3')
+  @RBAC(Role.USER, Role.ADMIN)
+  async testRBAC3() {
+    return true;
+  }
 }

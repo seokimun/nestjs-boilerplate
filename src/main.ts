@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
@@ -52,6 +53,8 @@ async function bootstrap() {
   });
 
   app.set('trust proxy', 1);
+
+  app.use(cookieParser());
 
   app.enableVersioning({
     type: VersioningType.URI,

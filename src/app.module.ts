@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { RolesGuard } from './api/v1/auth/guard/roles.guard';
-import { JwtAuthGuard } from './api/v1/auth/jwt/jwt.guard';
+import { AccessGuard } from './api/v1/auth/jwt/access.guard';
 import { V1Module } from './api/v1/v1.module';
 import { envSchema } from './libs/config/env.schema';
 import { LoggerMiddleware } from './libs/middleware/logger.middleware';
@@ -27,7 +27,7 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
       throttlers: [
         {
           ttl: 60_000, //60초
-          limit: 60,  //60회
+          limit: 60, //60회
         },
       ],
     }),
@@ -36,7 +36,7 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: AccessGuard,
     },
     {
       provide: APP_GUARD,

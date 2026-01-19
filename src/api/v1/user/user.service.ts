@@ -21,4 +21,11 @@ export class UserService {
       select: { id: true, email: true, role: true },
     });
   }
+
+  async findById(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true },
+    });
+  }
 }

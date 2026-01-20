@@ -258,6 +258,7 @@ Supported Authentication Methods
 2. User is redirected to Google Login
 
 3. Google redirects back to the application:
+
    `GET /v1/auth/google/callback`
 
 4. Server-side processing

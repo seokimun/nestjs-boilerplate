@@ -273,9 +273,9 @@ Supported Authentication Methods
 
 5. Client receives tokens
 
- - Access Token: used for authenticated API requests
+  - Access Token: used for authenticated API requests
 
- - Refresh Token: used to obtain new Access Tokens
+  - Refresh Token: used to obtain new Access Tokens
 
 ### JWT Authentication
 

@@ -279,7 +279,7 @@ Supported Authentication Methods
 
 ### JWT Authentication
 
-Access Token
+#### Access Token
 
 - Used for authenticating API requests
 
@@ -293,7 +293,7 @@ Access Token
 
 - User payload is attached to the request context (req.user)
 
-Refresh Token
+#### Refresh Token
 
 - Used to re-issue Access Tokens
 
@@ -305,17 +305,17 @@ Refresh Token
 
 Authorization is enforced using server-side role validation.
 
-Supported Roles
+#### Supported Roles
 
 - `ADMIN`
 
 - `USER`
 
-RBAC Decorator
+#### RBAC Decorator
 
 Access to routes can be restricted using the `@RBAC()` decorator.
 
-Admin-only Route
+#### Admin-only Route
 
 ```ts
 @Get('admin-only')
@@ -325,9 +325,7 @@ async adminOnly() {
 }
 ```
 
-### Public Routes
-
-Routes that do not require authentication can be explicitly marked using the `@Public()` decorator.
+#### Multiple Roles Allowed
 
 ```ts
 @Get('user-or-admin')
@@ -335,37 +333,19 @@ Routes that do not require authentication can be explicitly marked using the `@P
 async userOrAdmin() {
   return true;
 }
+
 ```
 
-### Usage Example
+### Public Routes
 
-Public Route (No Authentication)
-
-```ts
-  @Public()
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async googleLogin() {}
-```
-
-Role-Restricted Route (Admin Only)
+Routes that do not require authentication can be explicitly marked using the `@Public()` decorator.
 
 ```ts
-  @Get('test-rbac')
-  @RBAC(Role.ADMIN)
-  async testRBAC() {
-    return true;
-  }
-```
+@Public()
+@Get('google')
+@UseGuards(AuthGuard('google'))
+async googleLogin() {}
 
-Multiple Roles Allowed
-
-```ts
-  @Get('test-rbac')
-  @RBAC(Role.ADMIN, Role.USER)
-  async testRBAC() {
-    return true;
-  }
 ```
 
 ### Summary

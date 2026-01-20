@@ -162,8 +162,10 @@ GOOGLE_CLIENT_SECRET=(your-google-client-secret)
 GOOGLE_CALLBACK_URL=http://localhost:3001/v1/auth/google/callback
 
 # Jwt Configuration
-JWT_SECRET=(your-jwt-secret)
-JWT_EXPIRES_IN=3600s
+JWT_ACCESS_SECRET=(your-jwt-secret)
+JWT_ACCESS_EXPIRES_IN=20s
+JWT_REFRESH_SECRET=(your-jwt-refresh-secret)
+JWT_REFRESH_EXPIRES_IN=14d
 
 # Database URL
 DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
@@ -231,51 +233,106 @@ npx prisma migrate status
 
 ## 🔐 Authentication & Authorization
 
-This boilerplate supports authentication using **Google OAuth 2.0** and **JWT**.
+This project implements secure authentication and authorization using
+**Google OAuth 2.0**, **JWT\***, and **RBAC**.
+
+Authentication and authorization are strictly enforced on the server side.
+
+### Authentication Overview
+
+Authentication is handled using **Google OAuth 2.0** for identity verification
+and JWT (Access Token / Refresh Token) for session management.
+
+Supported Authentication Methods
+
+- Google OAuth 2.0 (Login)
+
+- JWT-based authentication for API access
 
 ### Google OAuth Flow
 
-1. Client requests authentication:
+1. Client initiates authentication:
    `GET /v1/auth/google`
 
-2. User is redirected to Google login
+2. User is redirected to Google Login
 
-3. Google redirects back to:
+3. Google redirects back to the application:
    `GET /v1/auth/google/callback`
 
-4. Server:
+4. Server-side processing
 
-- Validates Google profile
-- Finds or creates user
-- Issues a JWT access token
+- Validates Google OAuth response
 
-5. Client receives JWT and uses it for authenticated requests
+- Verifies Google user profile
+
+- Finds an existing user or creates a new user
+
+- Issues a JWT Access Token and Refresh Token
+
+5. Client receives tokens
+
+- Access Token: used for authenticated API requests
+
+- Refresh Token: used to obtain new Access Tokens
 
 ### JWT Authentication
 
-- JWT is sent via Authorization header:
-  `Authorization: Bearer <access_token>`
+Access Token
 
-- Token is validated using a Passport JWT strategy
+- Used for authenticating API requests
 
-- User payload is attached to the request context
+- Sent via HTTP header:
+
+  ```bash
+  Authorization: Bearer <access_token>
+  ```
+
+- Validated using a Passport JWT strategy
+
+- User payload is attached to the request context (req.user)
+
+Refresh Token
+
+- Used to re-issue Access Tokens
+
+- Typically stored in HTTP-only cookies
+
+- Validated separately via a dedicated guard/strategy
 
 ### Role-Based Access Control (RBAC)
 
-- Roles supported:
-  - `ADMIN`
-  - `USER`
+Authorization is enforced using server-side role validation.
 
-- Access can be restricted using decorators:
+Supported Roles
+
+- `ADMIN`
+
+- `USER`
+
+RBAC Decorator
+
+Access to routes can be restricted using the `@RBAC()` decorator.
+
+Admin-only Route
 
 ```ts
-@RBAC('ADMIN')
+@Get('admin-only')
+@RBAC(Role.ADMIN)
+async adminOnly() {
+  return true;
+}
 ```
 
-- Public routes can be marked using:
+### Public Routes
+
+Routes that do not require authentication can be explicitly marked using the `@Public()` decorator.
 
 ```ts
-@Public()
+@Get('user-or-admin')
+@RBAC(Role.ADMIN, Role.USER)
+async userOrAdmin() {
+  return true;
+}
 ```
 
 ### Usage Example
@@ -309,13 +366,19 @@ Multiple Roles Allowed
   }
 ```
 
-### How It Works
+### Summary
 
-1. `JWT Guard` is registered globally via `APP_GUARD`.
-2. All requests go through `APP_GUARD`.
-3. GUARD checks the `@Public()` decorator to bypass authentication.
-4. GUARD validates the JWT token and checks whether the user payload is present in the request.
-5. GUARD checks access permissions via the `@RBAC()` decorator and grants or denies access.
+- Google OAuth is used for identity verification
+
+- JWT Access Tokens authenticate API requests
+
+- Refresh Tokens are used for secure token renewal
+
+- Authorization is enforced via RBAC decorators
+
+- Global guards ensure consistent security enforcement
+
+- Public access is explicitly declared using @Public()
 
 ## 🩺 Health Check (Liveness / Readiness)
 

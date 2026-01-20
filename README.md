@@ -263,13 +263,13 @@ Supported Authentication Methods
 
 4. Server-side processing
 
- - Validates Google OAuth response
+   - Validates Google OAuth response
 
--  Verifies Google user profile
+   - Verifies Google user profile
 
- - Finds an existing user or creates a new user
+   - Finds an existing user or creates a new user
 
- - Issues a JWT Access Token and Refresh Token
+   - Issues a JWT Access Token and Refresh Token
 
 5. Client receives tokens
 

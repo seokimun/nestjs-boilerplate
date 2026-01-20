@@ -252,12 +252,12 @@ Supported Authentication Methods
 ### Google OAuth Flow
 
 1. Client initiates authentication:
-   `GET /v1/auth/google`
+`GET /v1/auth/google`
 
 2. User is redirected to Google Login
 
 3. Google redirects back to the application:
-   `GET /v1/auth/google/callback`
+`GET /v1/auth/google/callback`
 
 4. Server-side processing
 

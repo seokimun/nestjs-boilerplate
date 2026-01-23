@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { UuidPipe } from '../../../libs/pipe/uuid.pipe';
 import { ZdoValidationPipe } from '../../../libs/pipe/zod-validation.pipe';
 import { CrudService } from './crud.service';
 import {
@@ -31,7 +32,7 @@ export class CrudController {
 
   @Get(':id')
   @CrudSwagger.FindOne()
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', UuidPipe) id: string) {
     return this.crudService.findOne(id);
   }
 
@@ -44,7 +45,7 @@ export class CrudController {
   @Patch(':id')
   @CrudSwagger.Update()
   update(
-    @Param('id') id: string,
+    @Param('id', UuidPipe) id: string,
     @Body(new ZdoValidationPipe(UpdateCrudSchema)) dto: UpdateCrudDto,
   ) {
     return this.crudService.update(id, dto);
@@ -52,7 +53,7 @@ export class CrudController {
 
   @Delete(':id')
   @CrudSwagger.Delete()
-  delete(@Param('id') id: string) {
+  delete(@Param('id', UuidPipe) id: string) {
     return this.crudService.delete(id);
   }
 }

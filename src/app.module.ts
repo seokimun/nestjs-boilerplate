@@ -16,7 +16,6 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
         const parsed = envSchema.safeParse(env);
 
         if (!parsed.success) {
-          console.error('ENV VALIDATION ERROR:', parsed.error.format()); //개발환경
           throw new Error('Invalid environment variables');
         }
 
@@ -26,8 +25,8 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60_000, //60초
-          limit: 60, //60회
+          ttl: 60_000,
+          limit: 60,
         },
       ],
     }),

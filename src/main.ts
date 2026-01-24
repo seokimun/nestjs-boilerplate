@@ -7,6 +7,7 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
 import { env } from './libs/config/env';
+import { HttpExceptionFilter } from './libs/filters/http-exception.filter';
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger({
@@ -67,6 +68,8 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
     }),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('v1/api', app, document, {

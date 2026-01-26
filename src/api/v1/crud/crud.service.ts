@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/libs/prisma/prisma.service';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { CreateCrudDto } from './schema/create-crud.schema';
 import { UpdateCrudDto } from './schema/update-crud.schema';
 

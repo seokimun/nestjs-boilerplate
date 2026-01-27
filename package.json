@@ -87,7 +87,11 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage", "_comment": "test 설정",
+    "testEnvironment": "node",
+    "moduleNameMApper": {
+      "src/(.*)": "<rootDir>/src/$1",
+      "_comment": "test 설정"
+    }
   }
 }

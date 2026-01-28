@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:crud": "jest --testPathPatterns=src/api/v1/crud --coverage --collectCoverageFrom=api/v1/crud/**/*.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -87,11 +88,14 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "./coverage", "_comment": "test 설정",
+    "coveragePathIgnorePatterns": [
+      "module.ts",
+      "schema.ts"
+    ],
+    "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "moduleNameMApper": {
-      "src/(.*)": "<rootDir>/src/$1",
-      "_comment": "test 설정"
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/$1"
     }
   }
 }

@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { CrudService } from './crud.service';
@@ -37,7 +38,7 @@ describe('CrudService', () => {
     it('should return all crud', async () => {
       const crud = [
         {
-          id: '11111111-1111-1111-1111-111111111112',
+          id: '11111111-1111-1111-1111-111111111111',
           testField1: 'a',
           testField2: 1,
         },
@@ -52,9 +53,44 @@ describe('CrudService', () => {
 
       const result = await crudService.findAll();
 
-      expect(result).toEqual(crud);
       expect(prismaMock.crud.findMany).toHaveBeenCalledWith({
         orderBy: { createdAt: 'desc' },
+      });
+
+      expect(result).toEqual(crud);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a crud by id', async () => {
+      const crud = {
+        id: '11111111-1111-1111-1111-111111111111',
+        testField1: 'a',
+        testField2: 1,
+      };
+
+      prismaMock.crud.findUnique.mockResolvedValue(crud);
+
+      const result = await crudService.findOne(
+        '11111111-1111-1111-1111-111111111111',
+      );
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id: '11111111-1111-1111-1111-111111111111' },
+      });
+
+      expect(result).toEqual(crud);
+    });
+
+    it('should throw NotFoundException if crud not found', async () => {
+      prismaMock.crud.findUnique.mockResolvedValue(null);
+
+      await expect(
+        crudService.findOne('99999999-9999-9999-9999-999999999999'),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id: '99999999-9999-9999-9999-999999999999' },
       });
     });
   });

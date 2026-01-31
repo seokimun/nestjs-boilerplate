@@ -30,6 +30,10 @@ describe('CrudService', () => {
     crudService = module.get<CrudService>(CrudService);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(crudService).toBeDefined();
   });
@@ -83,14 +87,135 @@ describe('CrudService', () => {
     });
 
     it('should throw NotFoundException if crud not found', async () => {
+      const id = '99999999-9999-9999-9999-999999999999';
+
       prismaMock.crud.findUnique.mockResolvedValue(null);
 
-      await expect(
-        crudService.findOne('99999999-9999-9999-9999-999999999999'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(crudService.findOne(id)).rejects.toThrow(NotFoundException);
 
       expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
-        where: { id: '99999999-9999-9999-9999-999999999999' },
+        where: { id },
+      });
+    });
+  });
+
+  describe('create', () => {
+    it('should create a new crud', async () => {
+      const data = {
+        testField1: 'a',
+        testField2: 1,
+      };
+
+      const crud = {
+        id: '11111111-1111-1111-1111-111111111111',
+        ...data,
+      };
+
+      prismaMock.crud.create.mockResolvedValue(crud);
+
+      const result = await crudService.create(data);
+
+      expect(prismaMock.crud.create).toHaveBeenCalledWith({ data });
+
+      expect(result).toEqual(crud);
+    });
+  });
+
+  describe('update', () => {
+    it('should update a crud by id', async () => {
+      const id = '11111111-1111-1111-1111-111111111111';
+
+      const data = {
+        testField1: 'b',
+        testField2: 2,
+      };
+
+      const existingCrud = {
+        id,
+        testField1: 'a',
+        testField2: 1,
+      };
+
+      const updatedCrud = {
+        ...existingCrud,
+        ...data,
+      };
+
+      prismaMock.crud.findUnique.mockResolvedValue(existingCrud);
+      prismaMock.crud.update.mockResolvedValue(updatedCrud);
+
+      const result = await crudService.update(id, data);
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id },
+      });
+
+      expect(prismaMock.crud.update).toHaveBeenCalledWith({
+        where: { id },
+        data,
+      });
+
+      expect(result).toEqual(updatedCrud);
+    });
+
+    it('should throw NotFoundException if crud not found', async () => {
+      const id = '99999999-9999-9999-9999-999999999999';
+
+      const data = {
+        testField1: 'b',
+        testField2: 2,
+      };
+
+      prismaMock.crud.findUnique.mockResolvedValue(null);
+
+      await expect(crudService.update(id, data)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id },
+      });
+
+      expect(prismaMock.crud.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete a crud by id', async () => {
+      const crud = {
+        id: '11111111-1111-1111-1111-111111111111',
+        testField1: 'a',
+        testField2: 1,
+      };
+
+      prismaMock.crud.findUnique.mockResolvedValue(crud);
+
+      prismaMock.crud.delete.mockResolvedValue(crud);
+
+      const result = await crudService.delete(
+        '11111111-1111-1111-1111-111111111111',
+      );
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id: '11111111-1111-1111-1111-111111111111' },
+      });
+
+      expect(prismaMock.crud.delete).toHaveBeenCalledWith({
+        where: { id: '11111111-1111-1111-1111-111111111111' },
+      });
+
+      expect(result).toEqual(crud);
+    });
+
+    it('should throw NotFoundException if crud not found', async () => {
+      const id = '99999999-9999-9999-9999-999999999999';
+
+      prismaMock.crud.findUnique.mockResolvedValue(null);
+
+      await expect(crudService.delete(id)).rejects.toThrow(NotFoundException);
+
+      expect(prismaMock.crud.findUnique).toHaveBeenCalledWith({
+        where: { id },
       });
     });
   });

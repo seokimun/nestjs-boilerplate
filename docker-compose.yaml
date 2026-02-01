@@ -2,7 +2,10 @@ version: '3.3'
 services:
   db:
     image: postgres:16
+    container_name: nest-bp-db
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -18,6 +21,28 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
+
+  db_test:
+    image: postgres:16
+    container_name: nest-bp-db-test
+    restart: unless-stopped
+    env_file:
+      - .env.test
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - '6002:5432'
+    volumes:
+      - db_test:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
   api:
     build:
       context: .
@@ -34,4 +59,5 @@ services:
 
 volumes:
   db:
+  db_test:
   node_modules:

@@ -16,7 +16,9 @@ import { LoggerMiddleware } from './libs/middleware/logger.middleware';
         const parsed = envSchema.safeParse(env);
 
         if (!parsed.success) {
-          throw new Error('Invalid environment variables');
+          throw new Error('Env validation error');
+
+          process.exit(1);
         }
 
         return parsed.data;

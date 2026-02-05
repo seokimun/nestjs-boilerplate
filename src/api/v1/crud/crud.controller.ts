@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { UuidPipe } from '../../../libs/pipe/uuid.pipe';
-import { ZdoValidationPipe } from '../../../libs/pipe/zod-validation.pipe';
+import { ZodValidationPipe } from '../../../libs/pipe/zod-validation.pipe';
 import { CrudService } from './crud.service';
 import {
   CreateCrudSchema,
@@ -38,7 +38,7 @@ export class CrudController {
 
   @Post()
   @CrudSwagger.Create()
-  create(@Body(new ZdoValidationPipe(CreateCrudSchema)) dto: CreateCrudDto) {
+  create(@Body(new ZodValidationPipe(CreateCrudSchema)) dto: CreateCrudDto) {
     return this.crudService.create(dto);
   }
 
@@ -46,7 +46,7 @@ export class CrudController {
   @CrudSwagger.Update()
   update(
     @Param('id', UuidPipe) id: string,
-    @Body(new ZdoValidationPipe(UpdateCrudSchema)) dto: UpdateCrudDto,
+    @Body(new ZodValidationPipe(UpdateCrudSchema)) dto: UpdateCrudDto,
   ) {
     return this.crudService.update(id, dto);
   }

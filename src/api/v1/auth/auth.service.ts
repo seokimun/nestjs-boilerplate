@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { Payload } from './jwt/jwt.payload';
+import ApiError from '../../../libs/errors/api.error';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +38,7 @@ export class AuthService {
     const user = await this.userService.findById(userId);
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw ApiError.NotFound('유저를 찾을 수 없습니다', 'USER_NOT_FOUND');
     }
 
     const payload: Payload = {

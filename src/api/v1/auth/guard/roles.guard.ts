@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../../../../libs/decorators/role.decorator';
 import { Role } from '../../../../libs/enum/role.enum';
+import ApiError from '../../../../libs/errors/api.error';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,9 +26,13 @@ export class RolesGuard implements CanActivate {
     const { user } = context.switchToHttp().getRequest();
 
     if (!user) {
-      throw new ForbiddenException('접근이 거부되었습니다.');
+      throw ApiError.Unauthorized('로그인이 필요합니다', 'AUTH_REQUIRED');
     }
 
-    return requiredRoles.includes(user.role);
+    if (!requiredRoles.includes(user.role)) {
+      throw ApiError.Forbidden('접근 권한이 없습니다', 'ROLE_FORBIDDEN');
+    }
+
+    return true;
   }
 }

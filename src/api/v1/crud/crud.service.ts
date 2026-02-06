@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { CreateCrudDto } from './schema/create-crud.schema';
 import { UpdateCrudDto } from './schema/update-crud.schema';
+import ApiError from '../../../libs/errors/api.error';
 
 @Injectable()
 export class CrudService {
@@ -17,7 +18,10 @@ export class CrudService {
     const crud = await this.prisma.crud.findUnique({ where: { id } });
 
     if (!crud) {
-      throw new NotFoundException('Crud not found');
+      throw ApiError.NotFound(
+        '해당 CRUD를 찾을 수 없습니다.',
+        'CRUD_NOT_FOUND',
+      );
     }
 
     return crud;
@@ -31,7 +35,10 @@ export class CrudService {
     const crud = await this.prisma.crud.findUnique({ where: { id } });
 
     if (!crud) {
-      throw new NotFoundException('Crud not found');
+      throw ApiError.NotFound(
+        '해당 CRUD를 찾을 수 없습니다.',
+        'CRUD_NOT_FOUND',
+      );
     }
 
     return this.prisma.crud.update({
@@ -44,7 +51,10 @@ export class CrudService {
     const crud = await this.prisma.crud.findUnique({ where: { id } });
 
     if (!crud) {
-      throw new NotFoundException('Crud not found');
+      throw ApiError.NotFound(
+        '해당 CRUD를 찾을 수 없습니다.',
+        'CRUD_NOT_FOUND',
+      );
     }
 
     return this.prisma.crud.delete({ where: { id } });

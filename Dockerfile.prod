@@ -1,0 +1,27 @@
+# ---- build stage ----
+FROM node:20-alpine AS build
+
+WORKDIR /src
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+RUN npx prisma generate
+
+# ---- runtime stage ----
+FROM node:20-alpine AS runtime
+
+WORKDIR /src
+ENV NODE_ENV=production
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=build /src/dist ./dist
+COPY --from=build /src/prisma ./prisma
+COPY --from=build /src/node_modules/.prisma ./node_modules/.prisma
+
+EXPOSE 3000
+CMD ["node", "dist/main.js"]

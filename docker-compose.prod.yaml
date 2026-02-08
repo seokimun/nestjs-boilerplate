@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     ports:
-      - '127.0.0.1:3001:${HTTP_PORT}'
+      - '3001:${HTTP_PORT}'
   prometheus:
     image: prom/prometheus:latest
     container_name: nest-bp-prometheus

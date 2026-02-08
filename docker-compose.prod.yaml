@@ -1,27 +1,5 @@
 version: '3.3'
 services:
-  db:
-    image: postgres:16
-    container_name: nest-bp-db
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DATABASE}
-    ports:
-      - '${POSTGRES_PORT}:5432'
-    volumes:
-      - db:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-
   api:
     build:
       context: .
@@ -32,9 +10,6 @@ services:
       - .env
     ports:
       - '127.0.0.1:3001:${HTTP_PORT}'
-    depends_on:
-      - db
-
   prometheus:
     image: prom/prometheus:latest
     container_name: nest-bp-prometheus
@@ -67,7 +42,7 @@ services:
     container_name: nest-bp-grafana
     restart: unless-stopped
     ports:
-      - '127.0.0.1:3002:3000'
+      - '3002:3000'
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
@@ -79,9 +54,7 @@ services:
       - prometheus
       - loki
 
-
 volumes:
-  db:
   node_modules:
   grafana:
   loki:
